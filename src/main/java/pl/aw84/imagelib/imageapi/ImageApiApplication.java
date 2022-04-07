@@ -1,13 +1,13 @@
-package pl.aw84.imagelib.imagelib;
+package pl.aw84.imagelib.imageapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ImageLibApplication {
+public class ImageApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ImageLibApplication.class, args);
+		SpringApplication.run(ImageApiApplication.class, args);
 	}
 
 }
