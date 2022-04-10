@@ -61,4 +61,12 @@ public class Image {
     public void setStorage(Set<Storage> storage) {
         this.storages = storage;
     }
+
+    @Override
+    public String toString() {
+        return "Image [imageId=" + imageId +
+                ", name=" + name +
+                ", storages=" + storages +
+                "]";
+    }
 }

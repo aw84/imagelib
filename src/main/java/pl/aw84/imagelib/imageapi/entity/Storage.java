@@ -94,4 +94,14 @@ public class Storage {
     public void setHash(String hash) {
         this.hash = hash;
     }
+
+    @Override
+    public String toString() {
+        return "Storage [hash=" + hash +
+                ", host=" + host +
+                ", imageId=" + image.getImageId() +
+                ", protocol=" + protocol +
+                ", relativePath=" + relativePath +
+                ", storageId=" + storageId + "]";
+    }
 }

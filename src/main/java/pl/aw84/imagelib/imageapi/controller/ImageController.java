@@ -24,7 +24,7 @@ public class ImageController {
     }
 
     @GetMapping(value = "/greeting")
-    public String getMethodName() {
+    public String getGreeting() {
         return new String(this.greeting);
     }
 
