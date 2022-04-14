@@ -1,10 +1,13 @@
 package pl.aw84.imagelib.imageapi.controller;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.bouncycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,14 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pl.aw84.imagelib.imageapi.entity.Image;
 import pl.aw84.imagelib.imageapi.service.ImageService;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.encoders.Hex;
 
 @RefreshScope
 @RestController

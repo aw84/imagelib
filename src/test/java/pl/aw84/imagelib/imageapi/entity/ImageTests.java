@@ -8,6 +8,5 @@ public class ImageTests {
     
     @Test
     void createImageDefault() {
-        Image image = new Image();
     }
 }
