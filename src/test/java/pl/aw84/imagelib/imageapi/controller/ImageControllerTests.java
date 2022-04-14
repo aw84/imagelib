@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pl.aw84.imagelib.imageapi.entity.Image;
 
-@SpringBootTest(properties = { "spring.config.import=optional:configserver:http://localhost:9001" })
+@SpringBootTest
 public class ImageControllerTests {
 
     @Autowired
@@ -24,7 +24,7 @@ public class ImageControllerTests {
 
     @Test
     void getGreeting() {
-        assertEquals("toplevel-local", imageController.getGreeting());
+        assertEquals("toplevel-test", imageController.getGreeting());
     }
 
     @Test
