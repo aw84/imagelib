@@ -7,6 +7,8 @@ import org.bouncycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +23,12 @@ import pl.aw84.imagelib.imageapi.service.ImageService;
 @RefreshScope
 @RestController
 public class ImageController {
+
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private Tracer tracer;
+
     @Value("${greeting}")
     String greeting;
 
@@ -43,8 +49,14 @@ public class ImageController {
     @PostMapping(value = "/digest")
     public ResponseEntity<String> testDigest(@RequestParam("file") MultipartFile input) {
         try {
-            return new ResponseEntity<>(
-                    imageService.getDigest(input.getBytes()), HttpStatus.OK);
+            Span span = this.tracer.nextSpan().name("CoputeDigest");
+            try (Tracer.SpanInScope ws = this.tracer.withSpan(span.start())) {
+                String digest = imageService.getDigest(input.getBytes());
+                span.event("Digest completed");
+                return new ResponseEntity<>(digest, HttpStatus.OK);
+            } finally {
+                span.end();
+            }
         } catch (NoSuchAlgorithmException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Throwable t) {
