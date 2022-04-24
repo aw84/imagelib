@@ -1,5 +1,6 @@
 package pl.aw84.imagelib.imageapi.controller;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -28,6 +29,9 @@ public class ImageController {
     private ImageService imageService;
     @Autowired
     private Tracer tracer;
+
+    @Value("${imageDataDir}")
+    String imageDataDir;
 
     @Value("${greeting}")
     String greeting;
@@ -74,7 +78,10 @@ public class ImageController {
             byte[] hash = digest.digest(input.getBytes());
             String digestHex = new String(Hex.encode(hash));
 
-            imageService.scaleImage(input.getBytes());
+            // imageService.scaleImage(input.getBytes());
+
+            input.transferTo(new File(this.imageDataDir + "/"
+                    + input.getOriginalFilename()));
 
             return new ResponseEntity<>(digestHex, HttpStatus.OK);
         } catch (NoSuchAlgorithmException e) {
