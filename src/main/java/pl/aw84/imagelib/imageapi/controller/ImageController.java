@@ -80,6 +80,8 @@ public class ImageController {
 
             // imageService.scaleImage(input.getBytes());
 
+            imageService.saveFile(input, digestHex);
+
             input.transferTo(new File(this.imageDataDir + "/"
                     + input.getOriginalFilename()));
 

@@ -24,7 +24,7 @@ public class ImageControllerTests {
 
     @Test
     void getGreeting() {
-        assertEquals("toplevel-test", imageController.getGreeting());
+        assertEquals("toplevel-local", imageController.getGreeting());
     }
 
     @Test

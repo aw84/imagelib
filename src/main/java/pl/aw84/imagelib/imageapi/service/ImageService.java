@@ -2,6 +2,7 @@ package pl.aw84.imagelib.imageapi.service;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -11,16 +12,25 @@ import javax.imageio.ImageIO;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import pl.aw84.imagelib.imageapi.entity.Image;
 import pl.aw84.imagelib.imageapi.repository.ImageRepository;
 
 @Service
 public class ImageService {
+
+    @Value("${imageDataDir}")
+    String imageDataDir;
+
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    private SaveFile saveFile;
 
     public ImageService(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
@@ -61,6 +71,12 @@ public class ImageService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void saveFile(MultipartFile input, String hexDigest) throws IllegalStateException, IOException {
+        String landingDir = this.saveFile.createDirTree(this.imageDataDir, hexDigest);
+        input.transferTo(new File(landingDir + "/" + input.getOriginalFilename()));
+
+        
     }
 }
