@@ -30,8 +30,8 @@ public class ImageController {
     @Autowired
     private Tracer tracer;
 
-    @Value("${imageDataDir}")
-    String imageDataDir;
+    // @Value("${imageDataDir}")
+    // String imageDataDir;
 
     @Value("${greeting}")
     String greeting;
@@ -82,8 +82,8 @@ public class ImageController {
 
             imageService.saveFile(input, digestHex);
 
-            input.transferTo(new File(this.imageDataDir + "/"
-                    + input.getOriginalFilename()));
+            // input.transferTo(new File(this.imageDataDir + "/"
+            //         + input.getOriginalFilename()));
 
             return new ResponseEntity<>(digestHex, HttpStatus.OK);
         } catch (NoSuchAlgorithmException e) {

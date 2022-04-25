@@ -1,5 +1,7 @@
 package pl.aw84.imagelib.imageapi.service;
 
+import java.io.File;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -7,7 +9,9 @@ public class SaveFile {
     private final int dirLevels = 6;
 
     public String createDirTree(String dirBase, String hexDigest) {
-        return "";
+        String dir_path = dirBase + "/" + String.join("/", this.split(hexDigest));
+        new File(dir_path).mkdirs();
+        return dir_path;
     }
 
     public String[] split(String hexDigest) {

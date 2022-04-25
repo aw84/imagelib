@@ -7,27 +7,36 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import pl.aw84.imagelib.imageapi.entity.Image;
+import pl.aw84.imagelib.imageapi.entity.Storage;
 import pl.aw84.imagelib.imageapi.repository.ImageRepository;
+import pl.aw84.imagelib.imageapi.repository.StorageRepository;
 
 @Service
+@RefreshScope
 public class ImageService {
 
     @Value("${imageDataDir}")
-    String imageDataDir;
+    private String imageDataDir;
 
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    private StorageRepository storageRepository;
 
     @Autowired
     private SaveFile saveFile;
@@ -74,9 +83,21 @@ public class ImageService {
     }
 
     public void saveFile(MultipartFile input, String hexDigest) throws IllegalStateException, IOException {
-        String landingDir = this.saveFile.createDirTree(this.imageDataDir, hexDigest);
-        input.transferTo(new File(landingDir + "/" + input.getOriginalFilename()));
-
         
+        // TODO: fix relative vs absolute path
+        String relativePath = this.saveFile.createDirTree(this.imageDataDir, hexDigest);
+        String absolutePath = relativePath + "/" + input.getOriginalFilename();
+        input.transferTo(new File(absolutePath));
+
+        Image image = new Image();
+        image.setName(input.getOriginalFilename());
+                
+        image = imageRepository.save(image);
+
+        Storage storage = new Storage();
+        storage.setHash(hexDigest);
+        storage.setRelativePath(relativePath);
+        storage.setImage(image);
+        this.storageRepository.save(storage);        
     }
 }
