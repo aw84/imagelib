@@ -6,13 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class SaveFileTests {
-    @Autowired
-    SaveFile saveFile;
+
+    SaveFile saveFile = new SaveFile();
 
     @Test
     void splitHexDigestByTwoChars() {

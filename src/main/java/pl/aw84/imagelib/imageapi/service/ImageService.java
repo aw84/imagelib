@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -37,9 +35,6 @@ public class ImageService {
 
     @Autowired
     private StorageRepository storageRepository;
-
-    @Autowired
-    private SaveFile saveFile;
 
     public ImageService(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
@@ -83,21 +78,22 @@ public class ImageService {
     }
 
     public void saveFile(MultipartFile input, String hexDigest) throws IllegalStateException, IOException {
-        
-        // TODO: fix relative vs absolute path
-        String relativePath = this.saveFile.createDirTree(this.imageDataDir, hexDigest);
-        String absolutePath = relativePath + "/" + input.getOriginalFilename();
+
+        SaveFile saveFile = new SaveFile();
+        String relativePath = saveFile.createDirTree(this.imageDataDir, hexDigest)
+                + "/" + input.getOriginalFilename();
+
+        String absolutePath = this.imageDataDir + "/" + relativePath;
         input.transferTo(new File(absolutePath));
 
         Image image = new Image();
         image.setName(input.getOriginalFilename());
-                
         image = imageRepository.save(image);
 
         Storage storage = new Storage();
+        storage.setImage(image);
         storage.setHash(hexDigest);
         storage.setRelativePath(relativePath);
-        storage.setImage(image);
-        this.storageRepository.save(storage);        
+        this.storageRepository.save(storage);
     }
 }
