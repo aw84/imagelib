@@ -42,8 +42,8 @@ public class ImageController {
     }
 
     @GetMapping(value = "/image")
-    public ResponseEntity<Iterable<Image>> getImages() {
-        return new ResponseEntity<>(imageService.getAll(), HttpStatus.OK);
+    public ResponseEntity<Iterable<Image>> getImages(@RequestParam(defaultValue = "0") int p) {
+        return new ResponseEntity<>(imageService.getAll(p), HttpStatus.OK);
     }
 
     @PostMapping(value = "/digest")

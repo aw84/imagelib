@@ -14,6 +14,7 @@ import org.bouncycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,14 +31,17 @@ public class ImageService {
     @Value("${imageDataDir}")
     private String imageDataDir;
 
+    private SaveFile saveFile;
+
     @Autowired
     private ImageRepository imageRepository;
 
     @Autowired
     private StorageRepository storageRepository;
 
-    public ImageService(ImageRepository imageRepository) {
+    public ImageService(ImageRepository imageRepository, SaveFile saveFile) {
         this.imageRepository = imageRepository;
+        this.saveFile = saveFile;
     }
 
     @Transactional
@@ -48,8 +52,8 @@ public class ImageService {
     }
 
     @Transactional
-    public Iterable<Image> getAll() {
-        return imageRepository.findAll();
+    public Iterable<Image> getAll(int page) {
+        return imageRepository.findAll(PageRequest.of(page, 5));
     }
 
     public String getDigest(byte[] rawData) throws NoSuchAlgorithmException {
@@ -79,8 +83,8 @@ public class ImageService {
 
     public void saveFile(MultipartFile input, String hexDigest) throws IllegalStateException, IOException {
 
-        SaveFile saveFile = new SaveFile();
-        String relativePath = saveFile.createDirTree(this.imageDataDir, hexDigest)
+        // SaveFile saveFile = new SaveFile();
+        String relativePath = this.saveFile.createDirTree(this.imageDataDir, hexDigest)
                 + "/" + input.getOriginalFilename();
 
         String absolutePath = this.imageDataDir + "/" + relativePath;
