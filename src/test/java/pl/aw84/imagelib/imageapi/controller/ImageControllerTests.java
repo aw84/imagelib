@@ -30,7 +30,7 @@ public class ImageControllerTests {
     @Test
     @Transactional
     void getImages() {
-        ResponseEntity<Iterable<Image>> images = imageController.getImages();
+        ResponseEntity<Iterable<Image>> images = imageController.getImages(0);
 
         assertEquals(HttpStatus.OK, images.getStatusCode());
 
