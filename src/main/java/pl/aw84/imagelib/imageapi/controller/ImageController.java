@@ -2,6 +2,8 @@ package pl.aw84.imagelib.imageapi.controller;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +14,14 @@ import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import pl.aw84.imagelib.imageapi.entity.Image;
+import pl.aw84.imagelib.imageapi.entity.Storage;
 import pl.aw84.imagelib.imageapi.service.ImageService;
 
 @RefreshScope
@@ -44,6 +48,15 @@ public class ImageController {
     @GetMapping(value = "/image")
     public ResponseEntity<Iterable<Image>> getImages(@RequestParam(defaultValue = "0") int p) {
         return new ResponseEntity<>(imageService.getAll(p), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/storage/{imageId}")
+    public ResponseEntity<String> getImageStorage(@PathVariable(value = "imageId") UUID p) {
+        Optional<Storage> storage = imageService.getImageStorage(p);
+        if (storage.isEmpty()) {
+            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(storage.get().getRelativePath(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/digest")

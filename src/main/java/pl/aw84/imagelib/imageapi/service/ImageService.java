@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
@@ -99,5 +101,15 @@ public class ImageService {
         storage.setHash(hexDigest);
         storage.setRelativePath(relativePath);
         this.storageRepository.save(storage);
+    }
+
+    public Optional<Storage> getImageStorage(UUID p) {
+
+        Optional<Storage> storage = this.imageRepository.findById(p).stream()
+                .map(i -> i.getStorage())
+                .flatMap(a -> a.stream())
+                .findAny();
+
+        return storage;
     }
 }
