@@ -100,4 +100,10 @@ public class ImageController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(value = "/scale/{imageId}")
+    public ResponseEntity<String> scaleImage(@PathVariable(value = "imageId") UUID imageId) {
+        imageService.scaleImage(imageId);
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
 }
