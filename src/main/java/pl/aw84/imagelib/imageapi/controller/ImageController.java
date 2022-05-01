@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import pl.aw84.imagelib.imageapi.entity.Image;
+import pl.aw84.imagelib.imageapi.entity.ImageQualityEnum;
 import pl.aw84.imagelib.imageapi.entity.Storage;
 import pl.aw84.imagelib.imageapi.service.ImageService;
 
@@ -52,7 +53,7 @@ public class ImageController {
 
     @GetMapping(value = "/storage/{imageId}")
     public ResponseEntity<String> getImageStorage(@PathVariable(value = "imageId") UUID p) {
-        Optional<Storage> storage = imageService.getImageStorage(p);
+        Optional<Storage> storage = imageService.getImageStorage(p, ImageQualityEnum.small);
         if (storage.isEmpty()) {
             return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
         }
@@ -103,7 +104,12 @@ public class ImageController {
 
     @GetMapping(value = "/scale/{imageId}")
     public ResponseEntity<String> scaleImage(@PathVariable(value = "imageId") UUID imageId) {
-        imageService.scaleImage(imageId);
-        return new ResponseEntity<>("", HttpStatus.OK);
+        try {
+            imageService.scaleImage(imageId);
+            return new ResponseEntity<>("", HttpStatus.OK);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

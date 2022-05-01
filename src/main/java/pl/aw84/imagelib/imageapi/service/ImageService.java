@@ -134,17 +134,18 @@ public class ImageService {
         this.storageRepository.save(storage);
     }
 
-    public Optional<Storage> getImageStorage(UUID p) {
+    public Optional<Storage> getImageStorage(UUID p, ImageQualityEnum quality) {
 
         Optional<Storage> storage = this.imageRepository.findById(p).stream()
                 .map(i -> i.getStorage())
                 .flatMap(a -> a.stream())
+                .filter(s -> s.getQuality() == quality)
                 .findAny();
 
         return storage;
     }
 
-    public void scaleImage(UUID imageId) {
+    public void scaleImage(UUID imageId) throws NoSuchAlgorithmException, FileNotFoundException, IOException {
         Optional<Image> image = imageRepository.findById(imageId);
         Set<ImageQualityEnum> definedQuality = image.stream()
                 .map(i -> i.getStorage())
@@ -176,24 +177,21 @@ public class ImageService {
         System.err.println(allValues);
     }
 
-    private void scaleImageTiny(Storage originalStorage) {
-        try {
-            System.err.println(originalStorage.getImage().getImageId());
-
-            ImageScaler imageScaler = new ImageScaler(this.imageDataDir, originalStorage);
-
-            this.addScaledImage(originalStorage, ImageQualityEnum.tiny, imageScaler.getScaledImage());
-        } catch (NoSuchAlgorithmException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    private void scaleImageTiny(Storage originalStorage)
+            throws NoSuchAlgorithmException, FileNotFoundException, IOException {
+        ImageScaler imageScaler = new ImageScaler(this.imageDataDir, originalStorage, 200, 200);
+        this.addScaledImage(originalStorage, ImageQualityEnum.tiny, imageScaler.getScaledImage());
     }
 
-    private void scaleImageSmall(Storage originalStorage) {
-        System.err.println(originalStorage.getImage().getImageId());
+    private void scaleImageSmall(Storage originalStorage)
+            throws NoSuchAlgorithmException, FileNotFoundException, IOException {
+        ImageScaler imageScaler = new ImageScaler(this.imageDataDir, originalStorage, 800, 800);
+        this.addScaledImage(originalStorage, ImageQualityEnum.small, imageScaler.getScaledImage());
     }
 
-    private void scaleImageBig(Storage originalStorage) {
-        System.err.println(originalStorage.getImage().getImageId());
+    private void scaleImageBig(Storage originalStorage)
+            throws NoSuchAlgorithmException, FileNotFoundException, IOException {
+        ImageScaler imageScaler = new ImageScaler(this.imageDataDir, originalStorage, 1600, 1600);
+        this.addScaledImage(originalStorage, ImageQualityEnum.big, imageScaler.getScaledImage());
     }
 }

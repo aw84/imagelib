@@ -2,12 +2,9 @@ package pl.aw84.imagelib.imageapi.service;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -17,17 +14,21 @@ import pl.aw84.imagelib.imageapi.entity.Storage;
 public class ImageScaler {
     private Storage originalStorage;
     private String baseDir;
+    private int width;
+    private int height;
 
-    public ImageScaler(String baseDir, Storage originalStorage) {
+    public ImageScaler(String baseDir, Storage originalStorage, int width, int height) {
         this.originalStorage = originalStorage;
         this.baseDir = baseDir;
+        this.width = width;
+        this.height = height;
     }
 
     public ByteArrayOutputStream getScaledImage() throws FileNotFoundException, IOException {
         try (FileInputStream fin = new FileInputStream(this.baseDir + "/" + originalStorage.getRelativePath())) {
 
             BufferedImage bufferedImage = ImageIO.read(fin);
-            java.awt.Image scaledInstance = bufferedImage.getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH);
+            java.awt.Image scaledInstance = bufferedImage.getScaledInstance(this.width, this.height, java.awt.Image.SCALE_SMOOTH);
 
             ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 
