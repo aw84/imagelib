@@ -8,7 +8,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.EnumType;
 
-public class ImageQualityType extends EnumType {
+public class ImageQualityType extends EnumType<ImageQualityEnum> {
     public void nullSafeSet(
             PreparedStatement st,
             Object value,
