@@ -27,12 +27,24 @@ public class ImageScaler {
     public ByteArrayOutputStream getScaledImage() throws FileNotFoundException, IOException {
         try (FileInputStream fin = new FileInputStream(this.baseDir + "/" + originalStorage.getRelativePath())) {
 
-            BufferedImage bufferedImage = ImageIO.read(fin);
-            java.awt.Image scaledInstance = bufferedImage.getScaledInstance(this.width, this.height, java.awt.Image.SCALE_SMOOTH);
+            BufferedImage originalImage = ImageIO.read(fin);
+            int newW, newH;
+            if (originalImage.getWidth() < originalImage.getHeight()) {
+                newH = this.height;
+                newW = (int) (this.width
+                        * (double) ((double) originalImage.getWidth() / (double) originalImage.getHeight()));
+            } else {
+                newW = this.width;
+                newH = (int) (this.height
+                        * (double) ((double) originalImage.getHeight() / (double) originalImage.getWidth()));
+
+            }
+            java.awt.Image scaledInstance = originalImage.getScaledInstance(newW, newH,
+                    java.awt.Image.SCALE_SMOOTH);
 
             ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
 
-            BufferedImage bi = convertToBufferedImage(scaledInstance, bufferedImage.getType());
+            BufferedImage bi = convertToBufferedImage(scaledInstance, originalImage.getType());
             System.err.println("Scaled image width: " + bi.getWidth());
             ImageIO.write(bi, "jpg", byteOutput);
 

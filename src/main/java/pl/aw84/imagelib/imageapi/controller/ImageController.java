@@ -2,6 +2,7 @@ package pl.aw84.imagelib.imageapi.controller;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pl.aw84.imagelib.imageapi.entity.Image;
 import pl.aw84.imagelib.imageapi.entity.ImageQualityEnum;
-import pl.aw84.imagelib.imageapi.entity.Storage;
 import pl.aw84.imagelib.imageapi.service.ImageService;
 
 @RefreshScope
@@ -52,12 +52,18 @@ public class ImageController {
     }
 
     @GetMapping(value = "/storage/{imageId}")
-    public ResponseEntity<String> getImageStorage(@PathVariable(value = "imageId") UUID p) {
-        Optional<Storage> storage = imageService.getImageStorage(p, ImageQualityEnum.small);
+    public ResponseEntity<List<String>> getImageStorage(
+            @PathVariable(value = "imageId") UUID p,
+            @RequestParam(value = "all", defaultValue = "false") Boolean all) {
+
+        Optional<ImageQualityEnum> imageQuality = all ? Optional.empty() : Optional.of(ImageQualityEnum.small);
+
+        List<String> storage = imageService.getImageStorage(p, imageQuality);
+
         if (storage.isEmpty()) {
-            return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(storage.get().getRelativePath(), HttpStatus.OK);
+        return new ResponseEntity<>(storage, HttpStatus.OK);
     }
 
     @PostMapping(value = "/digest")

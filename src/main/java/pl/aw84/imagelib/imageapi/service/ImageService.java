@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -114,7 +115,6 @@ public class ImageService {
     @Transactional
     public void addScaledImage(Storage originalStorage, ImageQualityEnum quality, ByteArrayOutputStream scaledImage)
             throws NoSuchAlgorithmException, FileNotFoundException, IOException {
-
         String hexDigest = getDigest(scaledImage.toByteArray());
 
         String relativePath = this.saveFile.createDirTree(this.imageDataDir, hexDigest)
@@ -134,15 +134,21 @@ public class ImageService {
         this.storageRepository.save(storage);
     }
 
-    public Optional<Storage> getImageStorage(UUID p, ImageQualityEnum quality) {
+    public List<String> getImageStorage(UUID p, Optional<ImageQualityEnum> quality) {
 
-        Optional<Storage> storage = this.imageRepository.findById(p).stream()
+        List<String> storageList = this.imageRepository.findById(p).stream()
                 .map(i -> i.getStorage())
                 .flatMap(a -> a.stream())
-                .filter(s -> s.getQuality() == quality)
-                .findAny();
+                .filter(s -> {
+                    if (quality.isPresent()) {
+                        return quality.isPresent() && s.getQuality() == quality.get();
+                    } else
+                        return true;
+                })
+                .map(Storage::getRelativePath)
+                .collect(Collectors.toList());
 
-        return storage;
+        return storageList;
     }
 
     public void scaleImage(UUID imageId) throws NoSuchAlgorithmException, FileNotFoundException, IOException {
