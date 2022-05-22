@@ -137,7 +137,7 @@ public class ImageService {
     public List<String> getImageStorage(UUID p, Optional<ImageQualityEnum> quality) {
 
         List<String> storageList = this.imageRepository.findById(p).stream()
-                .map(i -> i.getStorage())
+                .map(i -> i.getStorages())
                 .flatMap(a -> a.stream())
                 .filter(s -> {
                     if (quality.isPresent()) {
@@ -154,7 +154,7 @@ public class ImageService {
     public void scaleImage(UUID imageId) throws NoSuchAlgorithmException, FileNotFoundException, IOException {
         Optional<Image> image = imageRepository.findById(imageId);
         Set<ImageQualityEnum> definedQuality = image.stream()
-                .map(i -> i.getStorage())
+                .map(i -> i.getStorages())
                 .flatMap(a -> a.stream())
                 .map(p -> p.getQuality())
                 .collect(Collectors.toSet());
@@ -163,7 +163,7 @@ public class ImageService {
         allValues.removeAll(definedQuality);
 
         Optional<Storage> originalQualityStorage = image.stream()
-                .flatMap(i -> i.getStorage().stream())
+                .flatMap(i -> i.getStorages().stream())
                 .filter(i -> i.getQuality() == ImageQualityEnum.original)
                 .findAny();
         if (originalQualityStorage.isPresent()) {

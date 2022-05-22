@@ -19,13 +19,21 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
-@TypeDef(
-    name = "image_quality",
-    typeClass = ImageQualityType.class
-)
+@TypeDef(name = "image_quality", typeClass = ImageQualityType.class)
 @Table(name = "storage")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "storageId")
+@ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Storage {
     @Id
     @Column(name = "storage_id")
@@ -34,6 +42,7 @@ public class Storage {
 
     @ManyToOne()
     @JoinColumn(name = "image_id", nullable = false)
+    @ToString.Exclude
     private Image image;
 
     private String protocol;
@@ -43,89 +52,9 @@ public class Storage {
     private String relativePath;
 
     @Enumerated(EnumType.STRING)
-    @Type(type="image_quality")
+    @Type(type = "image_quality")
     private ImageQualityEnum quality;
+
     private String hash;
 
-    public Storage() {
-    }
-
-    public ImageQualityEnum getQuality() {
-        return quality;
-    }
-
-    public void setQuality(ImageQualityEnum quality) {
-        
-        this.quality = quality;
-    }
-
-    public Storage(UUID storageId, Image image, String protocol, String host, String relativePath, ImageQualityEnum quality,
-            String hash) {
-        this.storageId = storageId;
-        this.image = image;
-        this.protocol = protocol;
-        this.host = host;
-        this.relativePath = relativePath;
-        this.quality = quality;
-        this.hash = hash;
-    }
-
-    public UUID getStorageId() {
-        return storageId;
-    }
-
-    public void setStorageId(UUID storageId) {
-        this.storageId = storageId;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public String getRelativePath() {
-        return relativePath;
-    }
-
-    public void setRelativePath(String relativePath) {
-        this.relativePath = relativePath;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
-    @Override
-    public String toString() {
-        return "Storage [hash=" + hash +
-                ", quality=" + quality +
-                ", host=" + host +
-                ", imageId=" + image.getImageId() +
-                ", protocol=" + protocol +
-                ", relativePath=" + relativePath +
-                ", storageId=" + storageId + "]";
-    }
 }

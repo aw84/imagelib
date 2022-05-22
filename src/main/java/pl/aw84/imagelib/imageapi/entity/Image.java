@@ -14,9 +14,20 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
 @Table(name = "image")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "imageId")
+@ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Image {
     @Id
     @Column(name = "image_id")
@@ -29,44 +40,4 @@ public class Image {
     @OneToMany(mappedBy = "image")
     private Set<Storage> storages;
 
-    public Image() {
-    }
-
-    public Image(UUID imageId, Set<Storage> storage, String name) {
-        this.imageId = imageId;
-        this.storages = storage;
-        this.name = name;
-    }
-
-    public UUID getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(UUID imageId) {
-        this.imageId = imageId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Storage> getStorage() {
-        return storages;
-    }
-
-    public void setStorage(Set<Storage> storage) {
-        this.storages = storage;
-    }
-
-    @Override
-    public String toString() {
-        return "Image [imageId=" + imageId +
-                ", name=" + name +
-                ", storages=" + storages +
-                "]";
-    }
 }
