@@ -32,8 +32,8 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Storage {
     @Id
     @Column(name = "storage_id")
