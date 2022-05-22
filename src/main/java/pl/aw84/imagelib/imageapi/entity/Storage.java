@@ -20,6 +20,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,6 +35,7 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(doNotUseGetters = true)
 public class Storage {
     @Id
     @Column(name = "storage_id")
@@ -43,6 +45,7 @@ public class Storage {
     @ManyToOne()
     @JoinColumn(name = "image_id", nullable = false)
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Image image;
 
     private String protocol;
