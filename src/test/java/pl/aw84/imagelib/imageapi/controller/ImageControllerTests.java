@@ -2,17 +2,22 @@ package pl.aw84.imagelib.imageapi.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.springframework.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.aw84.imagelib.imageapi.entity.Image;
+import pl.aw84.imagelib.imageapi.service.ImageService;
 
 @SpringBootTest
 public class ImageControllerTests {
+
+    @MockBean
+    ImageService imageService;
 
     @Autowired
     private ImageController imageController;
@@ -36,5 +41,9 @@ public class ImageControllerTests {
 
         images.getBody().forEach(System.err::println);
     }
-
+    // Endpoints:
+    // /image
+    // /storage/{imageId}
+    // /upload
+    // /scale/{imageId}
 }
